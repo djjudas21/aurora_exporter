@@ -54,7 +54,7 @@ for line in tmpoutput.splitlines():
 
     # slugify the key
     description = a.group(1).strip()
-    key = a.group(1).strip().replace(" ", "_").lower()
+    key = description.replace(" ", "_").replace("/", "_").lower()
     val = a.group(2)
     unit = a.group(3)
 
