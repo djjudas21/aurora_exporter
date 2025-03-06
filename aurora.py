@@ -1,7 +1,15 @@
 import subprocess
 import re
+import argparse
 
-#result = subprocess.run(['aurora', '-a', '2', '-d', '0', '-Y', '3', '/dev/ttyUSB0'], stdout=subprocess.PIPE)
+# Read in args
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', help="Inverter address", default='3')
+parser.add_argument('-z', help="Serial Device", default='/dev/ttyUSB0')
+parser.add_argument('-Y', help="Retry failed communications with inverter up to <num> times (1-100)", default='3')
+args = parser.parse_args()
+
+#result = subprocess.run(['aurora', '-a', args.a, '-d', '0', '-Y', args.Y, args.z], stdout=subprocess.PIPE)
 
 # main output example
 #Input 1 Voltage             =    202.644669 V
