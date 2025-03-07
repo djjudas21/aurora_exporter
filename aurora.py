@@ -1,17 +1,10 @@
-import subprocess
+#!/usr/bin/env python3
+
 import re
-import argparse
+import sys
 
-# Read in args
-parser = argparse.ArgumentParser()
-parser.add_argument('-a', help="Inverter address", default='3')
-parser.add_argument('-z', help="Serial Device", default='/dev/ttyUSB0')
-parser.add_argument('-Y', help="Retry failed communications with inverter up to <num> times (1-100)", default='3')
-args = parser.parse_args()
-
-#result = subprocess.run(['aurora', '-a', args.a, '-d', '0', '-Y', args.Y, args.z], stdout=subprocess.PIPE)
-
-tmpoutput = """
+# Sample input from the aurora program
+'''
 Input 1 Voltage             =    202.644669 V
 Input 1 Current             =      0.468859 A
 Input 1 Power               =     95.011826 W
@@ -28,20 +21,17 @@ Frequency Reading           =     50.050049 Hz.
 DC/AC Conversion Efficiency =         101.8 %
 Inverter Temperature        =     29.993212 C
 Booster Temperature         =     28.770926 C
-"""
+'''
 
-#for line in result.stdout.splitlines():
-for line in tmpoutput.splitlines():
-    # convert bytes to str
-#    line = line.decode()
+for line in sys.stdin:
 
-    # skip empty lines
-    if line == "":
-        continue
-    
     # parse the line
     pattern = '^\s*(.+)\s+=\s+(\d+\.\d+)\s([\w+%])'
     a = re.search(pattern, line)
+
+    # skip empty lines
+    if a is None:
+        continue
 
     # slugify the key
     description = a.group(1).strip()
@@ -52,14 +42,15 @@ for line in tmpoutput.splitlines():
     # prom output
     print(f"# HELP {key} {description}")
     print(f"# TYPE {key} gauge")
-    print(f"{key} {val}")
-
+    print(f"aurora_{key} {val}")
 
 # example prom output
-# # HELP apt_upgrades_pending Apt package pending updates by origin.
-# # TYPE apt_upgrades_pending gauge
-# apt_upgrades_pending{origin="Ubuntu:20.04/focal-updates",arch="all"} 3
-# apt_upgrades_pending{origin="Ubuntu:20.04/focal-updates",arch="arm64"} 2
-# # HELP node_reboot_required Node reboot is required for software updates.
-# # TYPE node_reboot_required gauge
-# node_reboot_required 1
+'''
+# HELP apt_upgrades_pending Apt package pending updates by origin.
+# TYPE apt_upgrades_pending gauge
+apt_upgrades_pending{origin="Ubuntu:20.04/focal-updates",arch="all"} 3
+apt_upgrades_pending{origin="Ubuntu:20.04/focal-updates",arch="arm64"} 2
+# HELP node_reboot_required Node reboot is required for software updates.
+# TYPE node_reboot_required gauge
+node_reboot_required 1
+'''
