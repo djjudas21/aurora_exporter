@@ -46,5 +46,5 @@ and writes it atomically with `sponge` to
 the node exporter.
 
 ```
-* * * * *	root	aurora -a 2 -d 0 -Y 3 /dev/ttyUSB0 | /home/jonathan/aurora/aurora.py | sponge /var/lib/prometheus/node-exporter/aurora.prom
+* * * * *	root	aurora -a 2 -d 0 -Y 3 /dev/ttyUSB0 | /home/jonathan/aurora_exporter/aurora.py | sponge /var/lib/prometheus/node-exporter/aurora.prom
 ```
